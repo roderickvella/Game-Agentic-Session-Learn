@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+.tools/
+venv/
+env/
+
+# Local application data and logs
+instance/
+work/
+*.log
+
+# SQLite databases and their journal / WAL sidecars, including test copies
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+
+# Local environment secrets (keep safe example templates available)
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Downloaded student evidence and local verification scratch script
+gamelearn-project-*.json
+gamelearn-session-*-diff.txt
+/tools/__verify_v5.py
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local Codex instructions
+AGENTS.md
