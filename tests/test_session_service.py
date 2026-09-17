@@ -175,3 +175,32 @@ def test_find_unity_project_inside_repository_subdirectory(tmp_path):
         (ignored / name).mkdir(parents=True, exist_ok=True)
 
     assert find_unity_projects(tmp_path) == [nested.resolve()]
+
+
+def test_session_numbers_are_per_project(app, client, tmp_path):
+    from types import SimpleNamespace
+    from gamelearn.services.explanation_service import explanation_task_title, build_explanation_context
+    from gamelearn.services.chat_service import chat_task_title
+
+    first = Project(name="First", path=str(tmp_path / "first"))
+    second = Project(name="Second", path=str(tmp_path / "second"))
+    db.session.add_all([first, second])
+    db.session.commit()
+    one, _ = start_session(first, FakeGit())
+    two, _ = start_session(second, FakeGit())
+    end_session(one, FakeGit())
+    three, _ = start_session(first, FakeGit())
+    assert [one.number, two.number, three.number] == [1, 1, 2]
+    assert [one.display_name, two.display_name, three.display_name] == [
+        "Session 1", "Session 1", "Session 2"
+    ]
+    assert len({one.id, two.id, three.id}) == 3
+    assert explanation_task_title(two).endswith("Second · Session 1")
+    assert "Session 1 · Chat 7" in chat_task_title(two, SimpleNamespace(id=7))
+    assert build_explanation_context(two)["current_session"]["number"] == 1
+    page = client.get(f"/sessions/{two.id}").get_data(as_text=True)
+    assert "Session 1" in page
+    three.name = "Movement"
+    db.session.commit()
+    assert three.display_name == "Movement"
+    assert three.number == 2

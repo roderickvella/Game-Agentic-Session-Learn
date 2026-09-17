@@ -106,7 +106,9 @@ def test_duplicate_import_and_default_names(app):
     assert len({source.path, first.path, second.path}) == 3
     assert first.sessions[0].name == 'Movement'
     assert second.sessions[0].name is None
-    assert second.sessions[0].display_name.startswith('Session ')
+    assert second.sessions[0].display_name == 'Session 1'
+    assert [session.number for session in first.sessions] == [1, 2]
+    assert [session.number for session in second.sessions] == [1, 2]
     assert second.sessions[1].name == 'Renamed'
     assert not page_path(first.sessions[0].id).exists()
 

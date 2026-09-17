@@ -35,8 +35,15 @@ class Session(db.Model):
     )
 
     @property
+    def number(self):
+        """One-based position among this project's sessions, in creation order."""
+        return Session.query.filter(
+            Session.project_id == self.project_id, Session.id <= self.id
+        ).count()
+
+    @property
     def display_name(self):
-        return self.name or f"Session {self.id}"
+        return self.name or f"Session {self.number}"
 
 
 class Event(db.Model):

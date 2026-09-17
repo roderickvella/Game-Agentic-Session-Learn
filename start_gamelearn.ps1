@@ -68,6 +68,7 @@ Write-Host "Choose the learning-page model and reasoning in the session summary;
 Write-Host "Learning pages are created by dedicated Codex tasks in the background."
 Write-Host "Codex sign-in is checked through the CLI App Server using this PowerShell user's normal access."
 Write-Host "Tutor chats and worksheet feedback are saved locally and use dedicated read-only Codex tasks."
+Write-Host "Session numbering starts at 1 for each project."
 Write-Host "Learning guides use step-by-step, student-friendly explanations."
 Write-Host "Learning activities focus on Unity C# changes. Supporting scripts are excluded from lessons."
 Write-Host "Press Ctrl+C in this window to stop it."

@@ -8,6 +8,8 @@ GameLearn does not edit, run, or commit the Unity project. Monitoring stays on t
 
 The project was created in the context of the [partnership between the Government of Malta and OpenAI](https://openai.com/index/malta-chatgpt-plus-partnership/). Through Malta's AI for All initiative, Maltese citizens who complete the programme's AI literacy course can receive one year of ChatGPT Plus at no cost. Because Codex is included with ChatGPT Plus, eligible students can use GameLearn with their own account, subject to their plan's usage limits.
 
+Sessions are numbered separately for each project, starting at Session 1. Imported projects also have their own numbering; custom session names still take precedence.
+
 ## What you need
 
 - Windows 10/11 or macOS 13+

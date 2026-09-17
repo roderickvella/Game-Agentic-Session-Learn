@@ -21,7 +21,7 @@ def student_visible_content(content):
 
 def chat_task_title(session, conversation):
     project_name = " ".join(session.project.name.split())[:50] or "Unity project"
-    return f"GameLearn tutor · {project_name} · Session {session.id} · Chat {conversation.id}"
+    return f"GameLearn tutor · {project_name} · Session {session.number} · Chat {conversation.id}"
 
 
 def chat_prompt(session, conversation, question):

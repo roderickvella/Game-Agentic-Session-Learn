@@ -64,6 +64,7 @@ echo "Choose the learning-page model and reasoning in the session summary; defau
 echo "Learning pages are created by dedicated Codex tasks in the background."
 echo "Codex sign-in is checked through the CLI App Server using this terminal user's normal access."
 echo "Tutor chats and worksheet feedback are saved locally and use dedicated read-only Codex tasks."
+echo "Session numbering starts at 1 for each project."
 echo "Learning guides use step-by-step, student-friendly explanations."
 echo "Learning activities focus on Unity C# changes. Supporting scripts are excluded from lessons."
 echo "Press Ctrl+C in this terminal to stop it."
