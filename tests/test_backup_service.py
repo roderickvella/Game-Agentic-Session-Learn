@@ -32,6 +32,16 @@ def seed():
     return project
 
 
+def test_import_backup_action_only_appears_on_home_page(app, client):
+    project = seed()
+
+    assert b'Import project backup' in client.get('/').data
+    project_page = client.get(f'/projects/{project.id}')
+    assert project_page.status_code == 200
+    assert b'Import project backup' not in project_page.data
+    assert b'Export project backup' in project_page.data
+
+
 def test_project_round_trip_and_rename(app, client, diagram_validator):
     source = seed()
     for session in source.sessions:

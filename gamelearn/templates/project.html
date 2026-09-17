@@ -28,7 +28,6 @@
 {% endif %}
 <div class="d-flex gap-2 mt-4">
   <a class="btn btn-outline-primary" href="{{ url_for('main.download_project_backup', project_id=project.id) }}">Export project backup</a>
-  <a class="btn btn-outline-secondary" href="{{ url_for('main.import_project_backup') }}">Import project backup</a>
 </div>
 <p class="small text-secondary mt-2">Export includes every session with its evidence, chats, and learning page. End active sessions and finish learning requests first.</p>
 {% if project.sessions %}
