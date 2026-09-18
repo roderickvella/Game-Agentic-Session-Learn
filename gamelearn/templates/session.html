@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Active session · Game Agentic Session Learn{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/quill-2.0.3.snow.css') }}">
+{% endblock %}
 {% block content %}
 <p class="eyebrow">{{ session.status }} SESSION</p>
 <h1>{{ session.display_name }}</h1>
@@ -13,6 +16,13 @@
   {% if session.status == 'ACTIVE' %}<form id="end-session-form" class="ms-auto" method="post" action="{{ url_for('main.finish_session', session_id=session.id) }}"><button class="btn btn-outline-danger">End session</button></form>{% else %}<a class="btn btn-success ms-auto" href="{{ url_for('main.session_summary', session_id=session.id) }}">View summary</a>{% endif %}
 </div>
 <p id="end-session-feedback" class="text-secondary" role="status"></p>
+{% include "session_prompt.html" %}
+<section class="card my-4" aria-labelledby="my-notes-heading">
+  <div class="card-body">
+    <h2 class="h4" id="my-notes-heading">My notes</h2>
+    {% include "session_notes.html" %}
+  </div>
+</section>
 <h2 class="h4">Timeline</h2>
 <div id="session-timeline" class="timeline" data-events-url="{{ url_for('main.session_events', session_id=session.id) }}">
   {% for event in events %}
@@ -24,6 +34,8 @@
 </div>
 {% endblock %}
 {% block scripts %}
+<script src="{{ url_for('static', filename='vendor/quill-2.0.3.js') }}"></script>
+<script src="{{ url_for('static', filename='js/session-notes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/session.js') }}"></script>
 <script>window.GameLearn && window.GameLearn.startSessionPage();</script>
 {% endblock %}

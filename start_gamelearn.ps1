@@ -1,4 +1,5 @@
 # Timeline cards display changed paths; session diffs include colored lines and text export.
+# Remove registered projects from their GameLearn page; Unity files remain untouched.
 param(
     [switch]$SkipSync
 )
@@ -69,8 +70,9 @@ Write-Host "Learning pages are created by dedicated Codex tasks in the backgroun
 Write-Host "Codex sign-in is checked through the CLI App Server using this PowerShell user's normal access."
 Write-Host "Tutor chats and worksheet feedback are saved locally and use dedicated read-only Codex tasks."
 Write-Host "Session numbering starts at 1 for each project."
+Write-Host "Optionally save or edit the session prompt and My notes (including pictures and YouTube links or embed codes) on an active session or completed summary."
 Write-Host "Learning guides use step-by-step, student-friendly explanations."
 Write-Host "Learning activities focus on Unity C# changes. Supporting scripts are excluded from lessons."
 Write-Host "Press Ctrl+C in this window to stop it."
-Write-Host "Export all sessions from a project page; import a project backup and rename sessions before restoring."
+Write-Host "Completed summaries offer a Session menu for learning pages and notes. Export all sessions from a project page; import a project backup and rename sessions before restoring."
 & $VenvPython app.py

@@ -12,7 +12,7 @@ from gamelearn.services.codex_bridge import CodexBridgeError, validate_learning_
 
 MAX_BACKUP_BYTES = 20 * 1024 * 1024
 FIELDS = {
-    Session: 'name started_at ended_at status start_commit_hash end_commit_hash',
+    Session: 'name prompt notes started_at ended_at status start_commit_hash end_commit_hash',
     Event: 'timestamp source event_type title description status metadata_json',
     SessionFileChange: 'path change_type additions deletions diff_text is_binary',
     ChatConversation: 'title created_at updated_at',
@@ -107,6 +107,11 @@ def build_session(payload):
     if payload['format'] != 'gamelearn-session' or type(payload['version']) is not int or payload['version'] != 1:
         raise BackupError('The backup session format is not supported.')
     data = validate_record(Session, payload['session'])
+    from gamelearn.services.session_notes import validate_notes
+    try:
+        data['notes'] = validate_notes(data['notes'])
+    except ValueError as exc:
+        raise BackupError(str(exc)) from None
     if data['status'] != 'COMPLETED' or data['ended_at'] is None:
         raise BackupError('Only completed sessions can be restored.')
     for key in ('events', 'changes', 'chats'):

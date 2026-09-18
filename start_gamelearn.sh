@@ -1,5 +1,6 @@
 #!/bin/sh
 # Timeline cards display changed paths; session diffs include colored lines and text export.
+# Remove registered projects from their GameLearn page; Unity files remain untouched.
 set -eu
 
 GAMELEARN_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -65,8 +66,9 @@ echo "Learning pages are created by dedicated Codex tasks in the background."
 echo "Codex sign-in is checked through the CLI App Server using this terminal user's normal access."
 echo "Tutor chats and worksheet feedback are saved locally and use dedicated read-only Codex tasks."
 echo "Session numbering starts at 1 for each project."
+echo "Optionally save or edit the session prompt and My notes (including pictures and YouTube links or embed codes) on an active session or completed summary."
 echo "Learning guides use step-by-step, student-friendly explanations."
 echo "Learning activities focus on Unity C# changes. Supporting scripts are excluded from lessons."
 echo "Press Ctrl+C in this terminal to stop it."
-echo "Export all sessions from a project page; import a project backup and rename sessions before restoring."
+echo "Completed summaries offer a Session menu for learning pages and notes. Export all sessions from a project page; import a project backup and rename sessions before restoring."
 exec "$VENV_PYTHON" app.py

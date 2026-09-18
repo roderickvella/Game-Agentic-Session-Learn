@@ -320,7 +320,7 @@ def test_explanation_context_sends_only_code_diffs_and_code_timeline(
     assert "routine engine chatter" not in response_text
 
 
-def test_summary_contains_learning_page_controls_and_local_evidence_link(app, client, tmp_path):
+def test_summary_contains_learning_page_controls_without_raw_evidence_link(app, client, tmp_path):
     app.extensions["codex_explanations"] = FakeCodexDispatcher()
     with app.app_context():
         project = Project(name="Game", path=str(tmp_path))
@@ -339,7 +339,8 @@ def test_summary_contains_learning_page_controls_and_local_evidence_link(app, cl
 
     assert response.status_code == 200
     assert b"Create learning page" in response.data
-    assert f"/api/sessions/{session_id}/explanation-context".encode() in response.data
+    assert f'href="/api/sessions/{session_id}/explanation-context"'.encode() not in response.data
+    assert b"View evidence JSON" not in response.data
     assert f"/api/sessions/{session_id}/explain".encode() in response.data
     assert f"/api/sessions/{session_id}/explanation-stop".encode() in response.data
     assert b'id="stop-explanation-button"' in response.data

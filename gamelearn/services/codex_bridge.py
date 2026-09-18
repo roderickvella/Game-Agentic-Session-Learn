@@ -275,6 +275,11 @@ class CodexExplanationDispatcher:
         with self._lock:
             return self._jobs.get(session_id)
 
+    def forget(self, session_id):
+        """Discard finished status when its saved session is removed."""
+        with self._lock:
+            self._jobs.pop(session_id, None)
+
     def stop(self, session_id):
         """Request cancellation of one learning-page job without affecting GameLearn."""
         with self._lock:
@@ -594,6 +599,11 @@ class CodexChatDispatcher:
     def status(self, message_id):
         with self._lock:
             return self._jobs.get(message_id)
+
+    def forget(self, message_id):
+        """Discard finished status when its saved message is removed."""
+        with self._lock:
+            self._jobs.pop(message_id, None)
 
     def _update(self, job, status, message, task_id=None, turn_id=None):
         with self._lock:

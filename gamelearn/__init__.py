@@ -45,15 +45,31 @@ def create_app(test_config=None):
 
     with app.app_context():
         db.create_all()
+        # create_all() does not add columns to tables in an existing SQLite
+        # database. Keep local pre-release databases usable as fields are added.
         from sqlalchemy import inspect, text
 
-        # Additive upgrades preserve databases created before project backups.
+        columns = {
+            column["name"] for column in inspect(db.engine).get_columns("session")
+        }
+        missing_session_columns = {
+            "name": "VARCHAR(200)",
+            "prompt": "TEXT",
+            "notes": "TEXT",
+        }
+        project_columns = {
+            column["name"] for column in inspect(db.engine).get_columns("project")
+        }
         with db.engine.begin() as connection:
-            inspector = inspect(connection)
-            if "name" not in {column["name"] for column in inspector.get_columns("session")}:
-                connection.execute(text('ALTER TABLE session ADD COLUMN name VARCHAR(200)'))
-            if "is_archive" not in {column["name"] for column in inspector.get_columns("project")}:
-                connection.execute(text('ALTER TABLE project ADD COLUMN is_archive BOOLEAN NOT NULL DEFAULT 0'))
+            for column, sql_type in missing_session_columns.items():
+                if column not in columns:
+                    connection.execute(
+                        text(f'ALTER TABLE session ADD COLUMN "{column}" {sql_type}')
+                    )
+            if "is_archive" not in project_columns:
+                connection.execute(
+                    text("ALTER TABLE project ADD COLUMN is_archive BOOLEAN NOT NULL DEFAULT 0")
+                )
 
     if not app.config.get("TESTING") and app.config.get("START_SESSION_MONITOR", True):
         from gamelearn.services.session_service import SessionMonitor

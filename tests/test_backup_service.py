@@ -23,7 +23,7 @@ def diagram_validator(monkeypatch):
 def seed():
     project = Project(name='Unity', path='/not-a-real-project')
     for name in ('Movement', 'Jumping'):
-        session = Session(project=project, name=name, started_at=utcnow(), ended_at=utcnow(), status='COMPLETED', start_commit_hash='a' * 40, end_commit_hash='b' * 40)
+        session = Session(project=project, name=name, prompt="Add movement\nKeep jumping intact.", started_at=utcnow(), ended_at=utcnow(), status='COMPLETED', start_commit_hash='a' * 40, end_commit_hash='b' * 40)
         session.events.append(Event(source='GIT', event_type='CHANGE', title='Recorded change', metadata_json='{"path":"Assets/Player.cs"}'))
         session.file_changes.append(SessionFileChange(path='Assets/Player.cs', change_type='MODIFIED', additions=2, deletions=0, diff_text='@@ -1 +1 @@\n-old\n+new'))
         session.chat_conversations.append(ChatConversation(title='Why?', messages=[ChatMessage(role='student', content='Why?', status='COMPLETED'), ChatMessage(role='tutor', content='Because.', status='COMPLETED', codex_task_id='private-task')]))
@@ -64,6 +64,7 @@ def test_project_round_trip_and_rename(app, client, diagram_validator):
     assert [s.name for s in restored.sessions] == ['Walking lesson', 'Jump lesson']
     assert [s.name for s in source.sessions] == ['Movement', 'Jumping']
     for original, copy in zip(source.sessions, restored.sessions):
+        assert copy.prompt == original.prompt == "Add movement\nKeep jumping intact."
         assert copy.id != original.id
         assert copy.status == 'COMPLETED'
         assert copy.started_at == original.started_at
@@ -209,21 +210,46 @@ def test_archive_does_not_access_git_or_monitor(app, client, monkeypatch):
     assert Session.query.filter_by(status='ACTIVE').count() == 0
 
 
-def test_existing_database_upgrade_preserves_data(tmp_path):
+def test_existing_database_gets_new_session_fields_without_losing_data(tmp_path):
     import sqlite3
+
     database = tmp_path / 'old.db'
     with sqlite3.connect(database) as connection:
         connection.executescript('''
-        CREATE TABLE project (id INTEGER PRIMARY KEY, name VARCHAR(200) NOT NULL, path TEXT NOT NULL UNIQUE, created_at DATETIME NOT NULL);
-        CREATE TABLE session (id INTEGER PRIMARY KEY, project_id INTEGER NOT NULL, started_at DATETIME NOT NULL, ended_at DATETIME, status VARCHAR(30) NOT NULL, start_commit_hash VARCHAR(64) NOT NULL, end_commit_hash VARCHAR(64));
+        CREATE TABLE project (
+            id INTEGER PRIMARY KEY,
+            name VARCHAR(200) NOT NULL,
+            path TEXT NOT NULL UNIQUE,
+            created_at DATETIME NOT NULL
+        );
+        CREATE TABLE session (
+            id INTEGER PRIMARY KEY,
+            project_id INTEGER NOT NULL,
+            started_at DATETIME NOT NULL,
+            ended_at DATETIME,
+            status VARCHAR(30) NOT NULL,
+            start_commit_hash VARCHAR(64) NOT NULL,
+            end_commit_hash VARCHAR(64)
+        );
         INSERT INTO project VALUES (1, 'Original', '/original', '2026-01-01 00:00:00');
-        INSERT INTO session VALUES (1, 1, '2026-01-01 00:00:00', NULL, 'ACTIVE', 'abc', NULL);
+        INSERT INTO session VALUES (
+            1, 1, '2026-01-01 00:00:00', NULL, 'ACTIVE', 'abc', NULL
+        );
         ''')
-    config = {'TESTING': True, 'SQLALCHEMY_DATABASE_URI': f'sqlite:///{database}'}
+
+    config = {
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': f'sqlite:///{database}',
+        'START_SESSION_MONITOR': False,
+    }
     for _ in range(2):
-        app = create_app(config)
-        with app.app_context():
-            assert db.session.get(Project, 1).name == 'Original'
-            assert db.session.get(Project, 1).is_archive is False
-            assert db.session.get(Session, 1).name is None
-            assert db.session.get(Session, 1).start_commit_hash == 'abc'
+        upgraded_app = create_app(config)
+        with upgraded_app.app_context():
+            project = db.session.get(Project, 1)
+            session = db.session.get(Session, 1)
+            assert project.name == 'Original'
+            assert project.is_archive is False
+            assert session.start_commit_hash == 'abc'
+            assert session.name is None
+            assert session.prompt is None
+            assert session.notes is None

@@ -14,13 +14,20 @@ class Project(db.Model):
     path = db.Column(db.Text, nullable=False, unique=True)
     created_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
     is_archive = db.Column(db.Boolean, default=False, nullable=False)
-    sessions = db.relationship("Session", backref="project", lazy=True)
+    sessions = db.relationship("Session", backref="project", lazy=True, cascade="all, delete-orphan")
 
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     name = db.Column(db.String(200), nullable=True)
+    prompt = db.Column(db.Text(20000), nullable=True)
+    notes = db.Column(db.Text, nullable=True)
+
+    @property
+    def notes_delta(self):
+        return json.loads(self.notes) if self.notes else {"ops": [{"insert": "\n"}]}
+
     started_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
     ended_at = db.Column(db.DateTime(timezone=True), nullable=True)
     status = db.Column(db.String(30), default="ACTIVE", nullable=False)

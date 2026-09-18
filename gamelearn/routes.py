@@ -177,6 +177,31 @@ def project_detail(project_id):
     )
 
 
+@main.route("/projects/<int:project_id>/remove", methods=["GET", "POST"])
+def remove_project(project_id):
+    from gamelearn.services.project_service import remove_project_history
+
+    project = db.get_or_404(Project, project_id)
+    if request.method == "GET":
+        return render_template("project_remove.html", project=project)
+    token = request.form.get("csrf_token", "")
+    if not secrets.compare_digest(token.encode(), current_app.config["CODEX_BRIDGE_CSRF_TOKEN"].encode()):
+        return "The local GameLearn request token was missing or invalid.", 403
+    if request.form.get("confirm") != "remove":
+        return render_template("project_remove.html", project=project,
+                               error="Confirm that you want to remove this project's saved history."), 400
+    try:
+        remove_project_history(project)
+    except ValueError as exc:
+        return render_template("project_remove.html", project=project, error=str(exc)), 409
+    except (SQLAlchemyError, OSError):
+        db.session.rollback()
+        return render_template("project_remove.html", project=project,
+                               error="GameLearn could not remove the project. Please try again."), 500
+    flash("Project removed from GameLearn. Your Unity files and Git repository were not changed.", "success")
+    return redirect(url_for("main.index"))
+
+
 @main.post("/projects/<int:project_id>/sessions")
 def begin_session(project_id):
     project = db.get_or_404(Project, project_id)
@@ -219,6 +244,52 @@ def session_detail(session_id):
         session=session,
         events=events,
     )
+
+
+@main.post("/sessions/<int:session_id>/prompt")
+def save_session_prompt(session_id):
+    from gamelearn.models import Session
+
+    token = request.form.get("csrf_token", "")
+    if not secrets.compare_digest(token.encode(), current_app.config["CODEX_BRIDGE_CSRF_TOKEN"].encode()):
+        return "The local GameLearn request token was missing or invalid.", 403
+    session = db.get_or_404(Session, session_id)
+    prompt = request.form.get("prompt", "")
+    if len(prompt) > Session.prompt.type.length:
+        return "Session prompts must be at most 20,000 characters.", 400
+    session.prompt = prompt if prompt.strip() else None
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        flash("GameLearn could not save the session prompt. Please try again.", "danger")
+    else:
+        flash("Session prompt saved.", "success")
+    destination = "main.session_detail" if session.status == "ACTIVE" else "main.session_summary"
+    return redirect(url_for(destination, session_id=session.id))
+
+
+@main.post("/api/sessions/<int:session_id>/notes")
+def save_session_notes(session_id):
+    from gamelearn.models import Session
+    from gamelearn.services.session_notes import validate_notes
+
+    if not _valid_codex_request_token():
+        return jsonify({"error": "The local GameLearn request token was missing or invalid."}), 403
+    session = db.get_or_404(Session, session_id)
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or set(data) != {"notes"}:
+        return jsonify({"error": "Provide session notes."}), 400
+    try:
+        session.notes = validate_notes(data["notes"])
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({"error": "Notes could not be saved. Please try again."}), 500
+    return jsonify({"saved": True})
 
 
 @main.get("/api/sessions/<int:session_id>/events")
@@ -270,13 +341,11 @@ def session_summary(session_id):
     session = db.get_or_404(Session, session_id)
     if session.status == "ACTIVE":
         return redirect(url_for("main.session_detail", session_id=session.id))
-    context_url = _local_explanation_context_url(session.id)
     dispatcher = current_app.extensions["codex_explanations"]
     return render_template(
         "session_summary.html",
         session=session,
         metrics=_summary_metrics(session),
-        explanation_context_url=context_url,
         codex_connection=dispatcher.connection_payload(),
         codex_csrf_token=current_app.config["CODEX_BRIDGE_CSRF_TOKEN"],
         learning_page_available=_valid_learning_page(session.id),

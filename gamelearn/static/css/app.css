@@ -80,3 +80,23 @@ body { background: var(--gl-bg); color: var(--gl-ink); }
 .diff-removed { color: #ffc1c1; background: #49252b; }
 .diff-meta { color: #aeb8c8; }
 .diff-hunk { color: #a5d8ff; background: #203044; }
+
+#session-notes-editor .ql-editor { min-height: 12rem; font-size: 1rem; }
+#session-notes-editor .ql-tooltip { left: .75rem !important; max-width: calc(100% - 1.5rem); right: auto !important; z-index: 10; }
+#session-notes-editor .ql-tooltip.ql-editing { align-items: center; display: flex; gap: .5rem; width: min(32rem, calc(100% - 1.5rem)); }
+#session-notes-editor .ql-tooltip.ql-editing input[type="text"] { flex: 1 1 16rem; min-width: 10rem; width: auto; }
+#session-notes-editor .ql-tooltip.ql-editing .ql-action { flex: 0 0 auto; }
+
+.session-actions .btn { min-width: 8.5rem; }
+.explain-card-modal { border-radius: 0 0 .5rem .5rem; display: block; }
+.explain-actions-inline { align-items: flex-start; flex-direction: row; justify-content: flex-start; margin-top: 1rem; min-width: 0; }
+#session-notes-editor img { cursor: pointer; display: block; height: auto; max-width: 100%; transition: box-shadow .15s ease; }
+#session-notes-editor img.note-image-center { margin-left: auto; margin-right: auto; }
+#session-notes-editor img.note-image-right { margin-left: auto; margin-right: 0; }
+#session-notes-editor iframe.ql-video { aspect-ratio: 16 / 9; border: 0; display: block; height: auto; max-width: 100%; width: 100%; }
+#session-notes-editor img.note-image-selected { box-shadow: 0 0 0 3px rgba(49, 87, 213, .35); }
+.note-image-controls { align-items: center; background: #fff; border: 1px solid #c8d1e0; border-radius: .65rem; bottom: 1rem; box-shadow: 0 .5rem 1.5rem rgba(23, 32, 51, .22); display: flex; flex-wrap: wrap; gap: .75rem 1rem; left: 50%; max-width: calc(100vw - 2rem); padding: .75rem 1rem; position: fixed; transform: translateX(-50%); width: max-content; z-index: 1080; }
+.note-image-size { align-items: center; display: grid; gap: .65rem; grid-template-columns: auto minmax(9rem, 16rem) 3rem; }
+.note-image-size output { color: #536175; font-variant-numeric: tabular-nums; }
+@media (max-width: 575.98px) { .note-image-controls { width: calc(100vw - 2rem); } .note-image-size { grid-template-columns: auto 1fr 3rem; width: 100%; } }
+@media (max-width: 575.98px) { #session-notes-editor .ql-tooltip.ql-editing { align-items: stretch; flex-wrap: wrap; } #session-notes-editor .ql-tooltip.ql-editing::before { width: 100%; } }
