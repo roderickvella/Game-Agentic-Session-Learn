@@ -8,14 +8,6 @@ GameLearn does not edit, run, or commit the Unity project. Monitoring stays on t
 
 The project was created in the context of the [partnership between the Government of Malta and OpenAI](https://openai.com/index/malta-chatgpt-plus-partnership/). Through Malta's AI for All initiative, Maltese citizens who complete the programme's AI literacy course can receive one year of ChatGPT Plus at no cost. Because Codex is included with ChatGPT Plus, eligible students can use GameLearn with their own account, subject to their plan's usage limits.
 
-Each session has an optional **Session prompt** field on its active page and completed summary. Paste the prompt given to the coding agent and select **Save prompt**. You can edit it later, including on imported sessions, or clear it and save to remove it. Prompts support up to 20,000 characters, are included in project backups, and are stored as notes only (not sent to Codex for learning pages or tutor chats).
-
-**My notes** provides an optional rich-text editor powered by locally bundled [Quill 2.0.3](https://github.com/slab/quill). Use H1 and H2 headings, links, bold, italic, underline, lists, quotes, and inline code, then select **Save notes**. Notes stay editable after completion and import, preserve formatting in backups, and are not sent to Codex. Clear the editor and save to remove notes. Use the picture toolbar button to embed PNG, JPEG, GIF, or WebP pictures (up to 2 MB each). Use the **YouTube** toolbar button to paste a video link or YouTube iframe embed code, then select **Add video**. GameLearn extracts the video ID and creates a responsive youtube-nocookie.com player; pasted HTML and attributes are never inserted. Only the canonical video link is saved in notes and backups, and playback requires internet access. Other iframe providers are unsupported. Select an embedded picture to resize it from 25–100%, align it left, center, or right, or remove it. Base64 picture data and its display settings are stored in the SQLite notes field and travel inside the project backup, with no loose image files. The limit is 100,000 text/formatting characters and 8 MB total per note including encoded pictures; the existing 20 MB project backup limit still applies. Completed summaries provide a Bootstrap **Session tools** dropdown that opens Learning page and My notes in focused modals, with **View Git diff** as the primary adjacent action. Evidence scope appears as a small footer note.
-
-This pre-release schema requires a fresh database; no database migrations or older backup compatibility are provided.
-
-Sessions are numbered separately for each project, starting at Session 1. Imported projects also have their own numbering; custom session names still take precedence.
-
 ## What you need
 
 - Windows 10/11 or macOS 13+
