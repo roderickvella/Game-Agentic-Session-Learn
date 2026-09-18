@@ -1,12 +1,12 @@
 # Game Agentic Session Learn
 
-GameLearn is a local learning tool for agentic coding in Unity projects. Its main purpose is to help students understand what a coding agent did after carrying out a prompt. While the agent works, GameLearn independently monitors the project's Git changes and builds a timeline. When the work is complete, the student can review the evidence and generate a beginner-friendly lesson explaining what changed, how the code works, and why the agent probably chose that approach.
+GASL (Game Agentic Session Learn) is a local learning tool for agentic coding in Unity projects. Its main purpose is to help students understand what a coding agent did after carrying out a prompt. While the agent works, GASL independently monitors the project's Git changes and builds a timeline. When the work is complete, the student can review the evidence and generate a beginner-friendly lesson explaining what changed, how the code works, and why the agent probably chose that approach.
 
-GameLearn is intended to run on localhost on the student's own computer at `http://127.0.0.1:5000`, using the student's authenticated Codex account. No third-party server or paid web hosting is needed.
+GASL is intended to run on localhost on the student's own computer at `http://127.0.0.1:5000`, using the student's authenticated Codex account. No third-party server or paid web hosting is needed.
 
-GameLearn does not edit, run, or commit the Unity project. Monitoring stays on the student's computer. Code evidence is sent to Codex only when the student creates a learning page or asks the tutor a question.
+GASL does not edit, run, or commit the Unity project. Monitoring stays on the student's computer. Code evidence is sent to Codex only when the student creates a learning page or asks the tutor a question.
 
-The project was created in the context of the [partnership between the Government of Malta and OpenAI](https://openai.com/index/malta-chatgpt-plus-partnership/). Through Malta's AI for All initiative, Maltese citizens who complete the programme's AI literacy course can receive one year of ChatGPT Plus at no cost. Because Codex is included with ChatGPT Plus, eligible students can use GameLearn with their own account, subject to their plan's usage limits.
+The project was created in the context of the [partnership between the Government of Malta and OpenAI](https://openai.com/index/malta-chatgpt-plus-partnership/). Through Malta's AI for All initiative, Maltese citizens who complete the programme's AI literacy course can receive one year of ChatGPT Plus at no cost. Because Codex is included with ChatGPT Plus, eligible students can use GASL with their own account, subject to their plan's usage limits.
 
 ## What you need
 
@@ -17,7 +17,7 @@ The project was created in the context of the [partnership between the Governmen
 - A Unity project inside a Git repository with at least one commit
 - Internet access during the first launch
 
-You do not need to install Python. The launcher installs a private Python 3.11 runtime and the required packages inside the GameLearn folder.
+You do not need to install Python. The launcher installs a private Python 3.11 runtime and the required packages inside the GASL folder.
 
 To check the required tools, open PowerShell on Windows or Terminal on macOS and run:
 
@@ -30,15 +30,15 @@ codex login status
 
 Each command should report a version or a signed-in account. If Codex is not signed in, run `codex login` and follow the instructions.
 
-## Download GameLearn
+## Download GASL
 
-Download or clone this repository, then open a terminal in the folder containing `README.md` and the two launcher files. Do not run GameLearn from inside a ZIP preview, and keep its folder separate from the Unity project you want to monitor.
+Download or clone this repository, then open a terminal in the folder containing `README.md` and the two launcher files. Do not run GASL from inside a ZIP preview, and keep its folder separate from the Unity project you want to monitor.
 
-## Start GameLearn
+## Start GASL
 
 ### Windows
 
-From PowerShell in the GameLearn folder, run:
+From PowerShell in the GASL folder, run:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
@@ -47,16 +47,16 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ### macOS
 
-From Terminal in the GameLearn folder, run:
+From Terminal in the GASL folder, run:
 
 ```bash
 chmod +x start_gamelearn.sh
 ./start_gamelearn.sh
 ```
 
-The first launch can take several minutes while GameLearn downloads its local Python runtime and dependencies. When the terminal shows that GameLearn is ready, open [http://127.0.0.1:5000](http://127.0.0.1:5000).
+The first launch can take several minutes while GASL downloads its local Python runtime and dependencies. When the terminal shows that GASL is ready, open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-Keep the terminal open while using GameLearn. Press **Ctrl+C** in that terminal to stop the server.
+Keep the terminal open while using GASL. Press **Ctrl+C** in that terminal to stop the server.
 
 For later launches, when `requirements.txt` has not changed, use:
 
@@ -72,14 +72,12 @@ or on macOS:
 
 ## Record a session
 
-To remove a registered or imported project, open its project page and select **Remove project**. Review the confirmation and export a backup first if you want to keep its history. Removal permanently deletes the GameLearn registration, sessions, evidence, prompts, notes, chats, and generated learning pages. Unity files and the Git repository are untouched. End active sessions and finish or stop learning-page requests, and wait for tutor answers before removal. You can register the project again afterward with fresh history.
+Before starting, the Unity repository must have at least one commit and no uncommitted changes. GASL will refuse to start with a dirty working tree; it never commits, stashes, resets, or discards student work.
 
-Before starting, the Unity repository must have at least one commit and no uncommitted changes. GameLearn will refuse to start with a dirty working tree; it never commits, stashes, resets, or discards student work.
-
-1. Open GameLearn and paste the Unity project path or its Git repository path.
+1. Open GASL and paste the Unity project path or its Git repository path.
 2. Select **Find and register project**. If the repository contains several Unity projects, use the exact Unity project folder.
-3. Select **Start GameLearn session** before giving the coding agent its prompt.
-4. Ask the coding agent to carry out the change. As it edits the project, saved Git changes appear in the GameLearn timeline.
+3. Select **Start GASL session** before giving the coding agent its prompt.
+4. Ask the coding agent to carry out the change. As it edits the project, saved Git changes appear in the GASL timeline.
 5. Select **End session** after the agent has finished its work.
 6. Review the timeline, changed files, and Git diff to see what the agent did.
 7. Create a learning page to understand how the changes work and why the agent probably made them.
@@ -90,7 +88,7 @@ A valid Unity project contains `Assets`, `Packages`, and `ProjectSettings`. It m
 
 On a completed session's summary, select **Create learning page**. You may choose an available Codex model and reasoning level; tutor and worksheet requests use Low reasoning.
 
-GameLearn creates a separate Codex task for each learning page or tutor request. Lessons focus on recorded Unity C# changes and clearly distinguish Git evidence from likely intent. Non-code files such as scenes, prefabs, assets, logs, and documentation are not sent as lesson content.
+GASL creates a separate Codex task for each learning page or tutor request. Lessons focus on recorded Unity C# changes and clearly distinguish Git evidence from likely intent. Non-code files such as scenes, prefabs, assets, logs, and documentation are not sent as lesson content.
 
 The generated guide includes:
 
@@ -118,18 +116,18 @@ The final step includes a worksheet. Students can inspect the referenced code, s
 | The launcher cannot be found | Make sure the terminal is open in the folder containing `start_gamelearn.ps1` and `start_gamelearn.sh`. |
 | PowerShell blocks the script | Run `Set-ExecutionPolicy -Scope Process Bypass` in the same PowerShell window, then retry. |
 | Git, Node.js, or Codex is missing | Install the tool, open a new terminal, and repeat the version checks above. |
-| Codex says sign-in is required | Run `codex login`, or try `codex login --device-auth`, then restart GameLearn. |
+| Codex says sign-in is required | Run `codex login`, or try `codex login --device-auth`, then restart GASL. |
 | The browser cannot connect | Keep the launcher terminal open, check it for errors, and use the exact address `http://127.0.0.1:5000`. |
-| Port 5000 is already in use | Use the GameLearn server already running, or stop its earlier terminal with **Ctrl+C**. |
+| Port 5000 is already in use | Use the GASL server already running, or stop its earlier terminal with **Ctrl+C**. |
 | First-time setup fails | Check the internet connection and run the launcher again without the skip option. |
 
 If a problem continues, copy the full terminal error and share it with your teacher or maintainer.
 
 ## Privacy and safety
 
-- GameLearn listens only on `127.0.0.1`, so it is not exposed to other computers.
+- GASL listens only on `127.0.0.1`, so it is not exposed to other computers.
 - Session evidence and chat history are stored locally in `instance/gamelearn.db`.
-- GameLearn sends bounded C# evidence to the authenticated local Codex CLI only after an explicit learning-page, tutor, or worksheet request.
+- GASL sends bounded C# evidence to the authenticated local Codex CLI only after an explicit learning-page, tutor, or worksheet request.
 - It does not store model credentials, call a model API directly, automate the Codex desktop app, or invoke Unity.
 - Bootstrap styling is loaded from a public CDN. The app still works offline after setup but may appear unstyled.
 
