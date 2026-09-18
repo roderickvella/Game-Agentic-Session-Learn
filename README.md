@@ -38,7 +38,7 @@ Download or clone this repository, then open a terminal in the folder containing
 
 ### Windows
 
-From PowerShell in the GASL folder, run:
+From PowerShell in the GameLearn folder, run:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
@@ -47,7 +47,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ### macOS
 
-From Terminal in the GASL folder, run:
+From Terminal in the GameLearn folder, run:
 
 ```bash
 chmod +x start_gamelearn.sh
